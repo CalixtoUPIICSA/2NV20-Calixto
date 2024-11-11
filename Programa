@@ -1,0 +1,171 @@
+from datetime import datetime, timedelta
+
+# Ejecución Principal del Código
+def menu(listaTareas):
+    print("*")
+    print("**** Bienvenido a su Lista de tareas ****")
+    print("*")
+    while True:
+        print("Por favor seleccione lo que quiere hacer:")
+        print("1.- Ver tareas pendientes")
+        print("2.- Agregar nueva tarea")
+        print("3.- Editar tarea")
+        print("4.- Eliminar tarea")
+        print("5.- Asignar prioridad")
+        print("6.- Establecer recordatorio")
+        print("7.- Marcar tarea como completada")
+        print("8.- Salir")
+        opcion = int(input())
+
+        if 1 <= opcion <= 8:
+            if opcion == 1:
+                mostrarTareas(listaTareas)
+            elif opcion == 2:
+                crearTarea(listaTareas)
+            elif opcion == 3:
+                editarTarea(listaTareas)
+            elif opcion == 4:
+                eliminarTarea(listaTareas)
+            elif opcion == 5:
+                asignarPrioridad(listaTareas)
+            elif opcion == 6:
+                establecerRecordatorio(listaTareas)
+            elif opcion == 7:
+                marcarCompletada(listaTareas)
+            else:
+                break
+        else:
+            print("Opción no válida")
+
+def crearTarea(listaTareas):
+    print("*")
+    titulo = input("Título: ")
+    descripcion = input("Descripción: ")
+    estado = input("Estado de la tarea: ")
+    fechaFinalizacion = input("Fecha de entrega (aaaa-mm-dd): ")
+    nota = input("Nota: ")
+    nuevaTarea = {
+        'Título': titulo,
+        'Descripción': descripcion,
+        'Fecha de creación': datetime.now().date(),
+        'Fecha de finalización': fechaFinalizacion,
+        'Estado': estado,
+        'Nota': nota,
+        'Prioridad': None,
+        'Recordatorio': None,
+        'Completada': False
+    }
+    listaTareas.append(nuevaTarea)
+    print("Tarea creada con éxito")
+    print("*")
+
+def mostrarTareas(listaTareas):
+    if len(listaTareas) > 0:
+        for i, tarea in enumerate(listaTareas, start=1):
+            print(f"******************** {i} ********************")
+            for llave, valor in tarea.items():
+                print(f"{llave}: {valor}")
+            print("*")
+    else:
+        print("*")
+        print("Parece que no tienes tareas pendientes")
+        print("*")
+
+def editarTarea(listaTareas):
+    print("*")
+    if len(listaTareas) > 0:
+        numTarea = int(input("Por favor ingrese el número de la tarea que quiere editar: ")) - 1
+        if numTarea < len(listaTareas):
+            print(f"Tarea número {numTarea+1}")
+            for llave, valor in listaTareas[numTarea].items():
+                print(f"{llave}: {valor}")
+
+            print("Por favor ingrese los nuevos datos de la tarea:")
+            titulo = input("Título: ")
+            descripcion = input("Descripción: ")
+            estado = input("Estado de la tarea: ")
+            fechaFinalizacion = input("Fecha de entrega (aaaa-mm-dd): ")
+            nota = input("Nota: ")
+            listaTareas[numTarea].update({
+                'Título': titulo,
+                'Descripción': descripcion,
+                'Fecha de creación': datetime.now().date(),
+                'Fecha de finalización': fechaFinalizacion,
+                'Estado': estado,
+                'Nota': nota
+            })
+            print("Tarea editada con éxito")
+        else:
+            print("Número de tarea inválido")
+    else:
+        print("No tienes ninguna tarea en tu lista")
+    print("*")
+
+def eliminarTarea(listaTareas):
+    print("*")
+    if len(listaTareas) > 0:
+        numTarea = int(input("Por favor ingrese el número de la tarea que quiere eliminar: ")) - 1
+        if numTarea < len(listaTareas):
+            print(f"¿Está seguro de querer eliminar la tarea?")
+            print("1.- Sí")
+            print("2.- No")
+            opcion = int(input())
+            if opcion == 1:
+                del listaTareas[numTarea]
+                print("Tarea eliminada con éxito.")
+            else:
+                print("Cancelado")
+        else:
+            print("Número de tarea inválido")
+    else:
+        print("No tienes ninguna tarea en tu lista")
+    print("*")
+
+def asignarPrioridad(listaTareas):
+    print("*")
+    if len(listaTareas) > 0:
+        numTarea = int(input("Por favor ingrese el número de la tarea a la que quiere asignar prioridad: ")) - 1
+        if numTarea < len(listaTareas):
+            prioridad = input("Ingrese la prioridad (alta, media, baja): ").lower()
+            listaTareas[numTarea]['Prioridad'] = prioridad
+            print("Prioridad asignada con éxito")
+        else:
+            print("Número de tarea inválido")
+    else:
+        print("No tienes ninguna tarea en tu lista")
+    print("*")
+
+def establecerRecordatorio(listaTareas):
+    print("*")
+    if len(listaTareas) > 0:
+        numTarea = int(input("Por favor ingrese el número de la tarea a la que quiere establecer un recordatorio: ")) - 1
+        if numTarea < len(listaTareas):
+            dias = int(input("Ingrese el número de días antes de la fecha de finalización para el recordatorio: "))
+            fechaFinalizacion = datetime.strptime(listaTareas[numTarea]['Fecha de finalización'], "%Y-%m-%d")
+            recordatorio = fechaFinalizacion - timedelta(days=dias)
+            listaTareas[numTarea]['Recordatorio'] = recordatorio.date()
+            print("Recordatorio establecido con éxito")
+        else:
+            print("Número de tarea inválido")
+    else:
+        print("No tienes ninguna tarea en tu lista")
+    print("*")
+
+def marcarCompletada(listaTareas):
+    print("*")
+    if len(listaTareas) > 0:
+        numTarea = int(input("Por favor ingrese el número de la tarea que quiere marcar como completada: ")) - 1
+        if numTarea < len(listaTareas):
+            listaTareas[numTarea]['Completada'] = True
+            print("Tarea marcada como completada")
+        else:
+            print("Número de tarea inválido")
+    else:
+        print("No tienes ninguna tarea en tu lista")
+    print("*")
+
+# Inicialización de la lista en la que se almacenan las tareas
+listaTareas = []
+
+# Ejecución de la aplicación
+menu(listaTareas)
